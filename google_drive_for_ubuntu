@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# Google Drive for Ubuntu
+gmount()
+{
+	if [ ! -d "$HOME/google_drive" ];
+		then
+			mkdir $HOME/google_drive
+		else
+			rm -rf $HOME/google_drive
+	fi
+	google-drive-ocamlfuse google_drive
+}
+
+alias gm=gmount
+alias gdr=google-drive-ocamlfuse
+
+# When you’re finished editing, adding or copying files you can unmount the fuse filesystem with this command: fusermount -u ~/google-drive
