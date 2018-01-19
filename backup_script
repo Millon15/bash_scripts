@@ -57,7 +57,7 @@ gdbackup()	# Google Drive backup, works only if you have installed Google Drive 
 	if [ -e "${GPATH}/$*.zip" ];
 		then
 			echo "Rewriting backup to ${GPATH}/$*.zip"
-			rm -rf $*.zip
+			rm -rf ${GPATH}/$*.zip
 		else
 			echo "Writing backup to ${GPATH}/$*.zip"
 	fi
