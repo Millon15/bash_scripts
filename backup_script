@@ -54,7 +54,7 @@ backup_restore()
 
 gdbackup()	# Google Drive backup, works only if you have installed Google Drive suddenly
 {
-	if [ -e "$*.zip" ];
+	if [ -e "${GPATH}/$*.zip" ];
 		then
 			echo "Rewriting backup to ${GPATH}/$*.zip"
 			rm -rf $*.zip
