@@ -3,7 +3,7 @@
 # Backup script
 #### You have to be in the folder, that contains the directories to backup ####
 BPATH="$HOME/backups"	# For sucsessful backup you need to be in the folder that you want to backup
-GPATH="$HOME/Google Drive"	# Google Drive backup, works only if you have installed Google Drive
+GPATH="$HOME/Google Drive/backups"	# Google Drive backup, works only if you have installed Google Drive
 
 backup()	# For sucsessful backup you need to be in the folder that you want to backup
 {
@@ -65,6 +65,20 @@ gdbackup()	# Google Drive backup, works only if you have installed Google Drive 
 	mv $*.zip ${GPATH}/
 }
 
+universal_backup()
+{
+	backup $*
+	gdbackup $*
+	cd $*
+	if [ -d "./.git" ];
+		then
+			git add --all
+			git commit -m "Anoter Backup"
+			git push
+	fi
+}
+
+alias unibak=universal_backup
 alias bak=backup
 alias gbak=gdbackup
 alias delbak=delbackup
