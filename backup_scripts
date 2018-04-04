@@ -67,11 +67,11 @@ gdbackup()	# Google Drive backup, works only if you have installed Google Drive 
 
 universal_backup()
 {
-	backup $*
-	gdbackup $*
-	cd $*
-	if [ -d "./.git" ];
+	backup $1
+	gdbackup $1
+	if [ -d "$1" -a -d "$1/.git" -a "$2" -eq "1" ];
 		then
+			cd $1
 			git add --all
 			git commit -m "Anoter Backup"
 			git push
