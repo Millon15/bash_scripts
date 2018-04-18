@@ -1,15 +1,28 @@
 #!/bin/bash
-argc=$#
-argv=($@)
 aim="vogsphere@vogsphere-2.unit.ua:intra/2018/activities/42_piscine_c_formation_piscine_php_day_03/vbrazas"
-tdir=$(mktemp -d /tmp/foo.XXXXXXXXX)
+ai=0
+clon=0
+tmp=0
 
-if [[ ${argv[0]} = "clone" && ${argv[1]} = ${aim} ]]; then
-git "$@"
-echo -e "[user]
-\temail = appleitunesstore11@gmail.com
-\tname = vbrazas" > ~/.gitconfig
-git clone ${aim} ${tdir}/tmp &> /dev/null
+for var in "$@"
+do
+	if [ ${var} = ${aim} ];
+	then
+		ai=1
+	fi
+	if [ ${var} = "clone" ];
+	then
+		clon=1
+	fi
+done
+
+if [[ ${clon} = 1 && ${ai} = 1 ]]; then
+	if git "$@"; then
+		echo -e "[user]\n\temail = appleitunesstore11@gmail.com\n\tname = vbrazas" > ~/.gitconfig
+		tdir=$(mktemp -d /tmp/foo.XXXXXXXXX)
+		git clone ${aim} ${tdir}/tmp &> /dev/null
+		rm -rf $tdir
+	fi
 else
-git "$@"
+	git "$@"
 fi
