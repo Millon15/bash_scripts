@@ -6,13 +6,13 @@ tmp=0
 
 for var in "$@"
 do
-	if [ ${var} = ${aim} ];
-	then
-		ai=1
-	fi
-	if [ ${var} = "clone" ];
-	then
+	if [[ ${var} = "clone" ]]; then
 		clon=1
+		continue
+	fi
+	if [[ ${clon} = 1 && ${var} = ${aim} ]]; then
+		ai=1
+		break
 	fi
 done
 
@@ -21,7 +21,6 @@ if [[ ${clon} = 1 && ${ai} = 1 ]]; then
 		echo -e "[user]\n\temail = appleitunesstore11@gmail.com\n\tname = vbrazas" > ~/.gitconfig
 		tdir=$(mktemp -d /tmp/foo.XXXXXXXXX)
 		git clone ${aim} ${tdir}/tmp &> /dev/null
-		rm -rf $tdir
 	fi
 else
 	git "$@"
