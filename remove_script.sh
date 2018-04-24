@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Remove script
+#### Remove script
 #### You have to be in the folder, that contains the directories to remove ####
 BIP="$HOME/.bin"
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Google Drive for Ubuntu
+#### Google Drive for Ubuntu
 
 GPATH="$HOME/google_drive"
 

@@ -1,4 +1,5 @@
 #!/bin/bash
+
 ln -s $HOME/Library/Containers/MAMP/manager-osx.app $HOME/Desktop/MAMP
 ln -s $HOME/Library/Containers/MAMP/apache2/htdocs $HOME/Desktop/htdocs
 mkdir -p $HOME/http/MyWebSite

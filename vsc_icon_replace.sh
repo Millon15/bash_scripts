@@ -1,6 +1,6 @@
 #!/bin/bash
 
-##Path of the code.desktop file, which we need to replace
+#### Path of the code.desktop file, which we need to replace
 
 C_PATH="/usr/share/applications/code.desktop"
 
