@@ -92,14 +92,10 @@ source $HOME/.brewconfig.zsh
 
 
 ##### START OF BASH SCRIPTS #####
-gil()
-{
-	/bin/bash /Users/vbrazas/projects/bash_scripts/this.sh "$@"
-}
 #### Backup scripts
 #### You have to be in the folder, that contains the directories to backup
 BPATH="$HOME/backups"	# For sucsessful backup you need to be in the folder that you want to backup
-GPATH="$HOME/Google Drive/backups"	# Google Drive backup, works only if you have installed Google Drive
+#GPATH="$HOME/Google Drive/backups"	# Google Drive backup, works only if you have installed Google Drive
 
 backup()	# For sucsessful backup you need to be in the folder that you want to backup
 {
@@ -215,7 +211,7 @@ alias unibak=universal_backup
 alias delunibak=delete_universal_backup
 alias bak=backup
 #alias gbak=gdbackup
-alias zshrcbak="cp ~/.zshrc ~/projects/bash_scripts && mv ~/projects/bash_scripts/.zshrc ~/projects/bash_scripts/zshrc && cd ~/projects/bash_scripts/ && git add --all && git commit -m 'zshrc auto-backup' && git push && cd ~/"
+alias zbak="cp ~/.zshrc ~/projects/bash_scripts && mv ~/projects/bash_scripts/.zshrc ~/projects/bash_scripts/zshrc && cd ~/projects/bash_scripts/ && git add --all && git commit -m 'zshrc auto-backup' && git push && cd ~/"
 alias delbak=delbackup
 alias gdelbak=gdelbackup
 alias bakre=backup_restore
@@ -290,7 +286,6 @@ alias gs='git status'
 alias gp='git push'
 alias gc='git commit -m "'
 alias gcl='git clone'
-alias git='gil'
 alias gl='git log'
 alias gls='git ls-files'
 alias gpl='git pull'
