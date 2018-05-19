@@ -1,5 +1,12 @@
 #!/bin/bash
 
+#gil()
+#{
+#	/bin/bash /Users/vbrazas/projects/bash_scripts/this.sh "$@"
+#}
+#alias git='gil'
+
+
 aim="vogsphere@vogsphere-2.unit.ua:intra/2018/activities/42_piscine_c_formation_piscine_php_day_03/vbrazas"
 ai=0
 clon=0
