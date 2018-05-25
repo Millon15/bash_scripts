@@ -95,7 +95,7 @@ source $HOME/.brewconfig.zsh
 #### Backup scripts
 #### You have to be in the folder, that contains the directories to backup
 BPATH="$HOME/backups"	# For sucsessful backup you need to be in the folder that you want to backup
-#GPATH="$HOME/Google Drive/backups"	# Google Drive backup, works only if you have installed Google Drive
+GPATH="$HOME/Google Drive/backups"	# Google Drive backup, works only if you have installed Google Drive
 
 backup()	# For sucsessful backup you need to be in the folder that you want to backup
 {
@@ -133,18 +133,18 @@ delbackup()
 	fi
 }
 
-#gdbackup	 Google Drive backup, works only if you have installed Google Drive suddenly
-#{
-#	if [ -e "${GPATH}/$*.zip" ];
-#		then
-#			echo "Rewriting backup to ${GPATH}/$*.zip"
-#			rm -rf ${GPATH}/$*.zip
-#		else
-#			echo "Writing backup to ${GPATH}/$*.zip"
-#	fi
-#	zip -qr $*.zip $*
-#	mv $*.zip ${GPATH}/
-#}
+gdbackup()	 # Google Drive backup, works only if you have installed Google Drive suddenly
+{
+	if [ -e "${GPATH}/$*.zip" ];
+		then
+			echo "Rewriting backup to ${GPATH}/$*.zip"
+			rm -rf ${GPATH}/$*.zip
+		else
+			echo "Writing backup to ${GPATH}/$*.zip"
+	fi
+	zip -qr $*.zip $*
+	mv $*.zip ${GPATH}/
+}
 
 gdelbackup()
 {
@@ -178,7 +178,7 @@ backup_restore()
 universal_backup()
 {
 	backup $1
-#	gdbackup $1
+	gdbackup $1
 	if [ -d "$1" -a -d "$1/.git" -a ! -z "$2" ];
 		then
 			cd $1
@@ -210,7 +210,7 @@ delete_universal_backup()
 alias unibak=universal_backup
 alias delunibak=delete_universal_backup
 alias bak=backup
-#alias gbak=gdbackup
+alias gbak=gdbackup
 alias zbak="cp ~/.zshrc ~/projects/bash_scripts && mv ~/projects/bash_scripts/.zshrc ~/projects/bash_scripts/zshrc && cd ~/projects/bash_scripts/ && git add --all && git commit -m 'zshrc auto-backup' && git push && cd ~/"
 alias delbak=delbackup
 alias gdelbak=gdelbackup
@@ -316,3 +316,5 @@ alias s='/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl '
 alias sublime='/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl '
 alias lss='~/projects/archive/git_archive/ft_ls/ft_ls'
 alias mysql='~/Library/Containers/MAMP/mysql/bin/mysql'
+
+clm
