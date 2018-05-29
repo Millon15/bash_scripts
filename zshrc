@@ -207,16 +207,6 @@ delete_universal_backup()
 	fi
 }
 
-alias unibak=universal_backup
-alias delunibak=delete_universal_backup
-alias bak=backup
-alias gbak=gdbackup
-alias zbak="cp ~/.zshrc ~/projects/bash_scripts && mv ~/projects/bash_scripts/.zshrc ~/projects/bash_scripts/zshrc && cd ~/projects/bash_scripts/ && git add --all && git commit -m 'zshrc auto-backup' && git push && cd ~/"
-alias delbak=delbackup
-alias gdelbak=gdelbackup
-alias bakre=backup_restore
-
-
 #### Remove script
 #### You have to be in the folder, that contains the directories to remove ####
 BIP="$HOME/.bin"
@@ -247,21 +237,36 @@ remove()
 	fi
 }
 
-alias re=remove
-
-clear_terminal_buffer()
-{
-	/usr/bin/osascript -e 'tell application "System Events" to tell process "Terminal" to keystroke "k" using command down'
-}
-
-alias cb=clear_terminal_buffer
-
 clean_library_mac()
 {
-	rm -rf ~/Library/*42_cache_*
+	if [[ $(du -h -d 0 ~ | grep \/Users\/vbrazas | cut -c 1) > 3 && $(ls -1 ~/Library/ | awk '/.*42_cache_.*/') ]];
+	then
+		rm -rf $HOME/Library/*42_cache_*
+	fi
 }
 
+backup_zshrc()
+{
+	cp $HOME/.zshrc $HOME/projects/bash_scripts
+	mv $HOME/projects/bash_scripts/.zshrc $HOME/projects/bash_scripts/zshrc
+	cd $HOME/projects/bash_scripts/
+	git add --all
+	git commit -m 'zshrc auto-backup'
+	git push
+	cd $HOME/
+}
+
+alias re=remove
+alias unibak=universal_backup
+alias delunibak=delete_universal_backup
+alias bak=backup
+alias gbak=gdbackup
+alias delbak=delbackup
+alias gdelbak=gdelbackup
+alias bakre=backup_restore
+
 alias clm=clean_library_mac
+alias zbak=backup_zshrc
 
 ##### END OF BASH SCRIPTS #####
 
@@ -303,7 +308,6 @@ alias cae='cat -e'
 alias cp='cp -r'
 alias p=pwd
 alias cl=clear
-alias r=reset
 alias es='echo $?'
 alias mk='mkdir -p'
 alias m=make
@@ -312,9 +316,9 @@ alias szs='source ~/.zshrc'
 alias ec=echo
 alias 42fc='bash ~/42FileChecker/42FileChecker.sh'
 
+alias cb="/usr/bin/osascript -e 'tell application \"System Events\" to tell process \"Terminal\" to keystroke \"k\" using command down'"
 alias s='/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl '
 alias sublime='/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl '
 alias lss='~/projects/archive/git_archive/ft_ls/ft_ls'
 alias mysql='~/Library/Containers/MAMP/mysql/bin/mysql'
-
-clm
+alias mamp='~/projects/bash_scripts/mamp.sh'
