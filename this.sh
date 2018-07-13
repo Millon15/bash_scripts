@@ -1,13 +1,13 @@
 #!/bin/bash
 
-#g()
+#gil()
 #{
 #	/bin/bash $HOME/projects/bash_scripts/this.sh "$@"
 #}
-#alias git='g'
+#alias git='gil'
 #[url ""] insteadOf = 
 
-aim="vogsphere@vogsphere-2.unit.ua:intra/2018/activities/42_piscine_c_formation_piscine_cpp_day_08/vbrazas"
+aim=""
 ai=0
 clon=0
 tmp=0
