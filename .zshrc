@@ -225,9 +225,10 @@ alias re=remove
 
 clean_library_mac()
 {
-	rm -rf $HOME/Library/*42_cache_*
-	rm -rf $HOME/.*42_cache_*
-	rm -rf $HOME/.*zcompdump*
+	rm -Rfv $HOME/Library/.*42_cache_*
+	rm -Rfv $HOME/.*42_cache_*
+	rm -Rfv $HOME/.*zcompdump*
+	rm -Rfv $HOME/.Trash/*
 }
 
 alias re=remove
@@ -238,9 +239,10 @@ alias gbak=gdbackup
 alias delbak=delbackup
 alias gdelbak=gdelbackup
 alias bakre=backup_restore
+alias zbak='cp $HOME/.zshrc $HOME/projects/bash_scripts/'
 
 alias clm=clean_library_mac
-alias cldocker='docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v /etc:/etc -e REMOVE_VOLUMES=1 spotify/docker-gc'
+alias cld='docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v /etc:/etc -e REMOVE_VOLUMES=1 spotify/docker-gc'
 
 ##### END OF BASH SCRIPTS #####
 
@@ -294,8 +296,6 @@ alias 42fc='bash ~/42FileChecker/42FileChecker.sh'
 alias cb="/usr/bin/osascript -e 'tell application \"System Events\" to tell process \"Terminal\" to keystroke \"k\" using command down'"
 alias s='open -a "Sublime Text"'
 alias lss='~/projects/archive/git_archive/ft_ls/ft_ls'
-alias mysql='~/Library/Containers/MAMP/mysql/bin/mysql'
-alias mamp='~/projects/bash_scripts/mamp.sh'
 
 clear
 # screenfetch -E
