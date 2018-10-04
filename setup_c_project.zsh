@@ -165,5 +165,3 @@ MAKEFILE
 if [[ "$REGFILE_EXT" = ".cpp" ]]; then
 	sed -e "s/\.c/\.cpp/g" -e "s/\.h/\.hpp/g" Makefile
 fi
-
-

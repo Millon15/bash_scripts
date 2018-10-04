@@ -94,154 +94,108 @@ source $HOME/.brewconfig.zsh
 ##### START OF BASH SCRIPTS #####
 #### Backup scripts
 #### You have to be in the folder, that contains the directories to backup
-BPATH="$HOME/backups"	# For sucsessful backup you need to be in the folder that you want to backup
+BPATH="$HOME/backups"				# For sucsessful backup you need to be in the folder that you want to backup
 GPATH="$HOME/Google Drive/backups"	# Google Drive backup, works only if you have installed Google Drive
 
-backup()	# For sucsessful backup you need to be in the folder that you want to backup
+gdbackup()							# Google Drive backup, works only if you have installed Google Drive suddenly
 {
-	if [ ! -d "${BPATH}/$*" ];
-		then
-			echo "Bakuping to ${BPATH}/$*"
-			mkdir -p ${BPATH}/$*/
-		else
-			echo "Rewriting bakup to ${BPATH}/$*/"
-			if [ ! -d "${BPATH}/_old" ];
-				then
-					mkdir -p ${BPATH}/_old
-			fi
-			if [ -d ${BPATH}/_old/$*/ ] && [ -d ${BPATH}/$*/ ];
-				then
-					rm -rf ${BPATH}/_old/$*/
-					mkdir -p ${BPATH}/_old/$*/
-					mv ${BPATH}/$*/* ${BPATH}/_old/$*/
-				else
-					mkdir -p ${BPATH}/_old/$*/
-					mv ${BPATH}/$*/* ${BPATH}/_old/$*/
-			fi
-	fi
-	cp -r $*/* ${BPATH}/$*/
-}
+	EXT="tar.gz"
 
-delbackup()
-{
-	if [ -d "${BPATH}/$*" ];
-		then
-			echo "Deleting backup from ${BPATH}/$*"
-			rm -rf ${BPATH}/$*
-		else
-			echo "Backup ${BPATH}/$* doesn't exist"
+	if [[ -e "${GPATH}/$1.${EXT}" ]]; then
+		echo "Rewriting backup to ${GPATH}/$1.${EXT}"
+		rm -rf "${GPATH}/$1.${EXT}"
+	else
+		echo "Writing backup to ${GPATH}/$1.${EXT}"
 	fi
+	tar -czf "$1.${EXT}" $1
+	mv "$1.${EXT}" ${GPATH}
 }
+alias gbak=gdbackup
 
-gdbackup()	 # Google Drive backup, works only if you have installed Google Drive suddenly
+backup()							# For sucsessful backup you need to be in the folder that you want to backup
 {
-	if [ -e "${GPATH}/$*.zip" ];
-		then
-			echo "Rewriting backup to ${GPATH}/$*.zip"
-			rm -rf ${GPATH}/$*.zip
-		else
-			echo "Writing backup to ${GPATH}/$*.zip"
-	fi
-	zip -qr $*.zip $*
-	mv $*.zip ${GPATH}/
-}
-gdelbackup()
-{
-	if [ -e "${GPATH}/$*.zip" ];
-		then
-			echo "Deleting google backup from ${GPATH}/$*.zip"
-			rm -rf ${GPATH}/$*.zip
-		else
-			echo "Google backup ${GPATH}/$*.zip doesn't exist"
-	fi
-}
+	OLD_D="${BPATH}/_old/"
 
-backup_restore()
-{
-	if [ -d "${BPATH}/$*" ];
-		then
-			echo "Getting backup from ${BPATH}/$*"
-			cp -r ${BPATH}/$*/ .
-		else
-			if [ -e "${GPATH}/$*.zip" ];
-			then
-				echo "Getting Google backup from ${BPATH}/$*"
-				cp ${GPATH}/$*.zip .
-				unzip $*.zip
-			else
-				echo "Backup ${BPATH}/$* and ${GPATH}/$*.zip doesn't exist"
-			fi
+	if [[ ! -d "${BPATH}/$1" ]]; then
+		echo "Bakuping to ${BPATH}/$1"
+	else
+		echo "Rewriting bakup to ${BPATH}/$1/"
+		if [ ! -d "$OLD_D" ]; then
+			mkdir -p $OLD_D
+		fi
+		rm -rf $OLD_D/$1
+		mv ${BPATH}/$1 $OLD_D
+	fi
+	if [[ ! -d "${BPATH}/$1/.git" ]]; then
+		cp -r $1 ${BPATH}
+	else
+		mkdir -p ${BPATH}/$1
+		cp -r $1/.git ${BPATH}/$1/
 	fi
 }
+alias bak=backup
 
 universal_backup()
 {
-	if [ -z "$3" ];
-		then
-			backup $1
-			gdbackup $1
+	if [ -z "$3" ]; then
+		backup $1
+		gdbackup $1
 	fi
-	if [ -d "$1" -a -d "$1/.git" -a ! -z "$2" ];
-		then
-			cd $1
-			git add --all
-			git commit -m "$2"
+	if [ -d "$1" -a -d "$1/.git" -a ! -z "$2" ]; then
+		cd $1
+		git add --all
+		git commit -m "$2"
+		if [[ -z $4 ]]; then
+			git push --set-upstream origin master
+		else
 			git push
-			cd ..
+		fi
+		cd ..
 	fi
 }
-
-delete_universal_backup()
-{
-	if [ -e "${GPATH}/$*.zip" ];
-		then
-			echo "Deleting google backup from ${GPATH}/$*.zip"
-			rm -rf ${GPATH}/$*.zip
-		else
-			echo "Google backup ${GPATH}/$*.zip doesn't exist"
-	fi
-	if [ -d "${BPATH}/$*" ];
-		then
-			echo "Deleting backup from ${BPATH}/$*"
-			rm -rf ${BPATH}/$*
-		else
-			echo "Backup ${BPATH}/$* doesn't exist"
-	fi
-}
+alias unibak=universal_backup
 
 #### Remove script
 #### You have to be in the folder, that contains the directories to remove ####
 BIP="$HOME/.Trash/"
-
 remove()
 {
 	echo "Removing to ${BIP}"
-	for arg do
-		rm $BIP$arg
-		mv $arg $BIP
-	done;
+	for i in $*;
+	do
+		rm -rf ${BIP}$i
+		mv $i ${BIP}
+	done
 }
 alias re=remove
+
+change_extension()
+{
+	if [[ "$1" == "" || "$2" == "" ]]; then
+		echo "chext –– changes extesions for all files in current folder"
+		echo "Usage: chext OLD_FILE_EXTENSION NEW_FILE_EXTENSION"
+		return;
+	fi
+
+	for f in *.$1; do
+		mv $f `basename $f .$1`.$2;
+	done;
+}
+alias chext=change_extension
 
 clean_library_mac()
 {
-	rm -Rfv $HOME/Library/.*42_cache_*
-	rm -Rfv $HOME/.*42_cache_*
-	rm -Rfv $HOME/.*zcompdump*
-	rm -Rfv $HOME/.Trash/*
+	rm -rf $HOME/Library/*42_cache*
+	rm -rf $HOME/*42_cache*
+	rm -rf $HOME/*zcompdump*
+	rm -rf $HOME/.Trash
+	mkdir -p $HOME/.Trash
+	rm -rf $HOME/Library/Group\ Containers/6N38VWS5BX.ru.keepcoder.Telegram/account-7583096117702376182/postbox/media
+	mkdir -p $HOME/Library/Group\ Containers/6N38VWS5BX.ru.keepcoder.Telegram/account-7583096117702376182/postbox/media
 }
-
-alias re=remove
-alias unibak=universal_backup
-alias delunibak=delete_universal_backup
-alias bak=backup
-alias gbak=gdbackup
-alias delbak=delbackup
-alias gdelbak=gdelbackup
-alias bakre=backup_restore
-alias zbak='cp $HOME/.zshrc $HOME/projects/bash_scripts/'
-
 alias clm=clean_library_mac
+
+alias zbak='cp $HOME/.zshrc $HOME/projects/bash_scripts/'
 alias cld='docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v /etc:/etc -e REMOVE_VOLUMES=1 spotify/docker-gc'
 
 ##### END OF BASH SCRIPTS #####
@@ -265,15 +219,15 @@ alias ...='cd ../..'
 alias ga='git add'
 alias gaa='git add --all'
 alias gs='git status'
-alias gp='git push'
 alias gc='git commit -m "'
 alias gcl='git clone'
 alias gls='git ls-files'
-alias gpl='git pull'
+alias gp='git push'
 alias gr='git remote -v'
 alias gl="git log --oneline --decorate --all --graph"
+alias gll='git pull'
 
-alias nr='norminette -R CheckForbiddenSourceHeader'
+alias nr='norminette'
 alias mr='norminette -R CheckForbiddenSourceHeader'
 alias o=open
 alias v=vim
