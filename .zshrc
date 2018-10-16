@@ -99,11 +99,16 @@ GPATH="$HOME/Google Drive/backups"	# Google Drive backup, works only if you have
 
 gdbackup()							# Google Drive backup, works only if you have installed Google Drive suddenly
 {
+	if [[ ! $1 ]]; then
+		exit 1;
+	fi
+
 	EXT="tar.gz"
 
+	mkdir -p ${GPATH}
 	if [[ -e "${GPATH}/$1.${EXT}" ]]; then
 		echo "Rewriting backup to ${GPATH}/$1.${EXT}"
-		rm -rf "${GPATH}/$1.${EXT}"
+		rm -f "${GPATH}/$1.${EXT}"
 	else
 		echo "Writing backup to ${GPATH}/$1.${EXT}"
 	fi
@@ -114,6 +119,10 @@ alias gbak=gdbackup
 
 backup()							# For sucsessful backup you need to be in the folder that you want to backup
 {
+	if [[ ! $1 ]]; then
+		exit 1;
+	fi
+
 	OLD_D="${BPATH}/_old/"
 
 	if [[ ! -d "${BPATH}/$1" ]]; then
@@ -143,12 +152,15 @@ universal_backup()
 	fi
 	if [ -d "$1" -a -d "$1/.git" -a ! -z "$2" ]; then
 		cd $1
+		is_first_commit=$(git log 2> /dev/null | cat);
 		git add --all
-		git commit -m "$2"
-		if [[ -z $4 ]]; then
-			git push --set-upstream origin master
-		else
-			git push
+		git commit -m $2
+		if [[ $4 == "" ]]; then
+			if [[ $is_first_commit == "" ]]; then
+				git push --set-upstream origin master
+			else
+				git push
+			fi
 		fi
 		cd ..
 	fi
@@ -171,7 +183,7 @@ alias re=remove
 
 change_extension()
 {
-	if [[ "$1" == "" || "$2" == "" ]]; then
+	if [[ $1 == "-h" || $1 == "--help" || $1 == "?" ]]; then
 		echo "chext –– changes extesions for all files in current folder"
 		echo "Usage: chext OLD_FILE_EXTENSION NEW_FILE_EXTENSION"
 		return;
@@ -186,8 +198,8 @@ alias chext=change_extension
 clean_library_mac()
 {
 	rm -rf $HOME/Library/*42_cache*
-	rm -rf $HOME/*42_cache*
-	rm -rf $HOME/*zcompdump*
+	rm -rf $HOME/.*42_cache*
+	rm -rf $HOME/.*zcompdump*
 	rm -rf $HOME/.Trash
 	mkdir -p $HOME/.Trash
 	rm -rf $HOME/Library/Group\ Containers/6N38VWS5BX.ru.keepcoder.Telegram/account-7583096117702376182/postbox/media
@@ -216,6 +228,7 @@ alias cc=cd
 alias ..='cd ..'
 alias ...='cd ../..'
 
+alias gi="git init"
 alias ga='git add'
 alias gaa='git add --all'
 alias gs='git status'
@@ -223,7 +236,10 @@ alias gc='git commit -m "'
 alias gcl='git clone'
 alias gls='git ls-files'
 alias gp='git push'
-alias gr='git remote -v'
+alias gr='git remote'
+alias grv='git remote -v'
+alias gra='git remote add'
+alias grao='git remote add origin'
 alias gl="git log --oneline --decorate --all --graph"
 alias gll='git pull'
 
@@ -246,10 +262,16 @@ alias src='source'
 alias szs='source ~/.zshrc'
 alias ec=echo
 alias 42fc='bash ~/42FileChecker/42FileChecker.sh'
+alias bcc='bc -qilw'
 
 alias cb="/usr/bin/osascript -e 'tell application \"System Events\" to tell process \"Terminal\" to keystroke \"k\" using command down'"
 alias s='open -a "Sublime Text"'
-alias lss='~/projects/archive/git_archive/ft_ls/ft_ls'
+alias vsc='open -a "Visual Studio Code"'
+
+# alias lss='~/projects/archive/git_archive/ft_ls/ft_ls'
+alias mamp='~/projects/bash_scripts/mamp.zsh'
+export MAMP="$HOME/Library/Containers/MAMP"
+alias mysql='~/Library/Containers/MAMP/mysql/bin/mysql'
 
 clear
 # screenfetch -E
