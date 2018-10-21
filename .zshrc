@@ -129,17 +129,14 @@ backup()							# For sucsessful backup you need to be in the folder that you wan
 		echo "Bakuping to ${BPATH}/$1"
 	else
 		echo "Rewriting bakup to ${BPATH}/$1/"
-		if [ ! -d "$OLD_D" ]; then
-			mkdir -p $OLD_D
-		fi
 		rm -rf $OLD_D/$1
 		mv ${BPATH}/$1 $OLD_D
 	fi
-	if [[ ! -d "${BPATH}/$1/.git" ]]; then
-		cp -r $1 ${BPATH}
-	else
+	if [[ -d "$1/.git" ]]; then
 		mkdir -p ${BPATH}/$1
 		cp -r $1/.git ${BPATH}/$1/
+	else
+		cp -r $1 ${BPATH}
 	fi
 }
 alias bak=backup
@@ -152,16 +149,9 @@ universal_backup()
 	fi
 	if [ -d "$1" -a -d "$1/.git" -a ! -z "$2" ]; then
 		cd $1
-		is_first_commit=$(git log 2> /dev/null | cat);
 		git add --all
 		git commit -m $2
-		if [[ $4 == "" ]]; then
-			if [[ $is_first_commit == "" ]]; then
-				git push --set-upstream origin master
-			else
-				git push
-			fi
-		fi
+		git push
 		cd ..
 	fi
 }
@@ -215,7 +205,6 @@ alias cld='docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v /etc:
 
 # My aliases
 alias l='ls -G'
-alias .=ls
 alias la='ls -AG'
 alias lr='ls -RG'
 alias ll='ls -lAG'
@@ -233,6 +222,7 @@ alias ga='git add'
 alias gaa='git add --all'
 alias gs='git status'
 alias gc='git commit -m "'
+alias gch='git checkout'
 alias gcl='git clone'
 alias gls='git ls-files'
 alias gp='git push'
@@ -270,6 +260,7 @@ alias vsc='open -a "Visual Studio Code"'
 
 # alias lss='~/projects/archive/git_archive/ft_ls/ft_ls'
 alias mamp='~/projects/bash_scripts/mamp.zsh'
+alias inst_mamp='mamp -r; mamp -i; while [[ $(diskutil list | grep MAMP) ]]; do sleep 10; done; mamp -l'
 export MAMP="$HOME/Library/Containers/MAMP"
 alias mysql='~/Library/Containers/MAMP/mysql/bin/mysql'
 
