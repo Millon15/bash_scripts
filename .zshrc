@@ -222,10 +222,12 @@ alias ga='git add'
 alias gaa='git add --all'
 alias gs='git status'
 alias gc='git commit -m "'
+alias gcm='git commit -m "'
 alias gch='git checkout'
-alias gcl='git clone'
+alias gcl='git clone --recurse-submodules'
 alias gls='git ls-files'
 alias gp='git push'
+alias gm='git submodule'
 alias gr='git remote'
 alias grv='git remote -v'
 alias gra='git remote add'
@@ -259,8 +261,9 @@ alias s='open -a "Sublime Text"'
 alias vsc='open -a "Visual Studio Code"'
 
 # alias lss='~/projects/archive/git_archive/ft_ls/ft_ls'
-alias mamp='~/projects/bash_scripts/mamp.zsh'
-alias inst_mamp='mamp -r; mamp -i; while [[ $(diskutil list | grep MAMP) ]]; do sleep 10; done; mamp -l'
+MAMPZSH="$HOME/projects/bash_scripts/mamp.zsh"
+alias mamp=$MAMPZSH
+alias remamp='mamp -r; mamp -i; sleep 10; while [[ $(diskutil list | grep MAMP) ]]; do sleep 10; done; mamp -l'
 export MAMP="$HOME/Library/Containers/MAMP"
 alias mysql='~/Library/Containers/MAMP/mysql/bin/mysql'
 

@@ -2,28 +2,30 @@
 
 MAMP=$HOME/Library/Containers/MAMP
 CONFF="$MAMP/apache2/conf/bitnami/bitnami.conf"
-INCMSG="Include \"$HOME/http/main.conf\""
+IMAIN="Include \"$HOME/http/main.conf\""
+IMATCHA="Include \"$HOME/http/matcha.conf\""
 
 put_usage() {
-	echo "Usage: mamp [-i] [-l] [-r] [-h]"
+	echo "Usage: mamp [-i] [-l] [-r] [-h] [--re]"
 	echo "Default installiation directory: $MAMP"
 	echo "mamp -i : launch instaliation drive"
-	echo "mamp -l : makes aliases on Desktop and add additional include strings to bitnami.conf file"
+	echo "mamp -l : makes aliases on Desktop and setup my custom MAMP environment"
 	echo "mamp -r : remove the '$MAMP' folder"
 	echo "mamp -h : call help reference"
-	exit 1;
 }
 
 if [[ $1 == "-l" ]]; then
-	echo "Creating MAMP aliases and new folder: ~/http/MyWebSite"
-	rm -f $HOME/Desktop/MAMP $HOME/Desktop/htdocs
+	echo "Creating MAMP aliases and new folder: $HOME/http/MyWebSite"
+	rm -f $HOME/Desktop/MAMP
 	ln -s $MAMP/manager-osx.app $HOME/Desktop/MAMP
-	ln -s $MAMP/apache2/htdocs $HOME/Desktop/htdocs
 	mkdir -p $HOME/http/MyWebSite
-	echo "Turnng off MAMP backend caching and correcting bitnami.conf"
-	sed -i -e 's/opcache.revalidate_freq=60/opcache.revalidate_freq=0/g' $MAMP/php/etc/php.ini
-	if [[ $(tail -n 1 $CONFF) != $INCMSG ]]; then
-		echo $INCMSG >> $CONFF
+	echo "Turning off MAMP backend caching and correcting $MAMP/apache2/conf/bitnami/bitnami.conf"
+	sed -i "" -e 's/opcache.revalidate_freq=60/opcache.revalidate_freq=0/g' -e 's/\;sendmail_path/sendmail_path/' $MAMP/php/etc/php.ini
+	if [[ ! $(grep "$IMAIN" $CONFF) ]]; then
+		echo $IMAIN >> $CONFF
+	fi
+	if [[ ! $(grep "$IMATCHA" $CONFF) ]]; then
+		echo $IMATCHA >> $CONFF
 	fi
 elif [[ $1 == "-r" ]]; then
 	rm -rf $MAMP
