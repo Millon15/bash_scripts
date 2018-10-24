@@ -132,7 +132,7 @@ backup()							# For sucsessful backup you need to be in the folder that you wan
 		rm -rf $OLD_D/$1
 		mv ${BPATH}/$1 $OLD_D
 	fi
-	if [[ -d "$1/.git" ]]; then
+	if [[ -d "$1/.git" && ! $2 ]]; then
 		mkdir -p ${BPATH}/$1
 		cp -r $1/.git ${BPATH}/$1/
 	else
@@ -143,16 +143,16 @@ alias bak=backup
 
 universal_backup()
 {
-	if [ -z "$3" ]; then
-		backup $1
-		gdbackup $1
-	fi
 	if [ -d "$1" -a -d "$1/.git" -a ! -z "$2" ]; then
 		cd $1
 		git add --all
 		git commit -m $2
 		git push
 		cd ..
+	fi
+	if [ -z "$3" ]; then
+		backup $1
+		# gdbackup $1
 	fi
 }
 alias unibak=universal_backup
@@ -228,6 +228,7 @@ alias gcl='git clone --recurse-submodules'
 alias gls='git ls-files'
 alias gp='git push'
 alias gm='git submodule'
+alias gst='git stash'
 alias gr='git remote'
 alias grv='git remote -v'
 alias gra='git remote add'
