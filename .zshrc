@@ -126,34 +126,36 @@ backup()							# For sucsessful backup you need to be in the folder that you wan
 	OLD_D="${BPATH}/_old/"
 
 	if [[ ! -d "${BPATH}/$1" ]]; then
-		echo "Bakuping to ${BPATH}/$1"
+		echo -n "Bakuping to ${BPATH}/$1/"
 	else
-		echo "Rewriting bakup to ${BPATH}/$1/"
+		echo -n "Rewriting bakup to ${BPATH}/$1/"
 		rm -rf $OLD_D/$1
 		mv ${BPATH}/$1 $OLD_D
 	fi
-	if [[ -d "$1/.git" && ! $2 ]]; then
+	if [[ ! $2 && -d "$1/.git" ]]; then
 		mkdir -p ${BPATH}/$1
 		cp -r $1/.git ${BPATH}/$1/
+		echo '.git'
 	else
 		cp -r $1 ${BPATH}
+		echo '*'
 	fi
 }
 alias bak=backup
 
 universal_backup()
 {
-	if [ -d "$1" -a -d "$1/.git" -a ! -z "$2" ]; then
+	if [ -d "$1" -a -d "$1/.git" -a $2 ]; then
 		cd $1
 		git add --all
 		git commit -m $2
-		git push
+		if [[ $(git remote) ]]; then
+			git push
+		fi
 		cd ..
 	fi
-	if [ -z "$3" ]; then
-		backup $1
-		# gdbackup $1
-	fi
+	backup $1
+	# gdbackup $1
 }
 alias unibak=universal_backup
 
@@ -224,6 +226,7 @@ alias gs='git status'
 alias gc='git commit -m "'
 alias gcm='git commit -m "'
 alias gch='git checkout'
+alias gf='git fetch'
 alias gcl='git clone --recurse-submodules'
 alias gls='git ls-files'
 alias gp='git push'
@@ -246,6 +249,7 @@ alias ca=cat
 alias cae='cat -e'
 alias cp='cp -r'
 alias p=pwd
+alias t=touch
 alias cl=clear
 alias rs=reset
 alias es='echo $?'
@@ -264,7 +268,7 @@ alias vsc='open -a "Visual Studio Code"'
 # alias lss='~/projects/archive/git_archive/ft_ls/ft_ls'
 MAMPZSH="$HOME/projects/bash_scripts/mamp.zsh"
 alias mamp=$MAMPZSH
-alias remamp='mamp -r; mamp -i; sleep 10; while [[ $(diskutil list | grep MAMP) ]]; do sleep 10; done; mamp -l'
+alias remamp='mamp -r; mamp -i; sleep 10; while [[ $(diskutil list | grep MAMP) ]]; do sleep 5; done; mamp -l'
 export MAMP="$HOME/Library/Containers/MAMP"
 alias mysql='~/Library/Containers/MAMP/mysql/bin/mysql'
 
