@@ -97,48 +97,51 @@ source $HOME/.brewconfig.zsh
 BPATH="$HOME/backups"				# For sucsessful backup you need to be in the folder that you want to backup
 GPATH="$HOME/Google Drive/backups"	# Google Drive backup, works only if you have installed Google Drive
 
-gdbackup()							# Google Drive backup, works only if you have installed Google Drive suddenly
+tar_backup()
 {
 	if [[ ! $1 ]]; then
-		exit 1;
+		echo "Usage: tbak <file|folder to backup> [path to put tarred file|folder]"
+		return 1;
 	fi
 
 	EXT="tar.gz"
 
-	mkdir -p ${GPATH}
-	if [[ -e "${GPATH}/$1.${EXT}" ]]; then
-		echo "Rewriting backup to ${GPATH}/$1.${EXT}"
-		rm -f "${GPATH}/$1.${EXT}"
-	else
-		echo "Writing backup to ${GPATH}/$1.${EXT}"
+	if [[ ! $2 ]]; then
+		2=$BPATH
+	elif [[ $(ls -ld $2 2> /dev/null | head -c 1) != 'd' ]]; then
+		echo "Bad directory to backup name: $2"
+		return 2;
 	fi
-	tar -czf "$1.${EXT}" $1
-	mv "$1.${EXT}" ${GPATH}
+
+	proj_name=${${1%/.git}##*/}
+	if [[ -e "$2/${proj_name}.${EXT}" ]]; then
+		rm -f "$2/${proj_name}.${EXT}"
+	fi
+	tar -czf "$2/${proj_name}.${EXT}" $1
 }
-alias gbak=gdbackup
+alias tbak=tar_backup
 
 backup()							# For sucsessful backup you need to be in the folder that you want to backup
 {
 	if [[ ! $1 ]]; then
-		exit 1;
+		echo "Usage: bak <file|folder to backup>"
+		return 1;
 	fi
 
-	OLD_D="${BPATH}/_old/"
-
-	if [[ ! -d "${BPATH}/$1" ]]; then
+	if [[ ! -d ${BPATH} ]]; then
+		mkdir ${BPATH}
+	fi
+	if [[ ! -e "${BPATH}/$1" ]]; then
 		echo -n "Bakuping to ${BPATH}/$1/"
 	else
 		echo -n "Rewriting bakup to ${BPATH}/$1/"
-		rm -rf $OLD_D/$1
-		mv ${BPATH}/$1 $OLD_D
 	fi
 	if [[ ! $2 && -d "$1/.git" ]]; then
-		mkdir -p ${BPATH}/$1
-		cp -r $1/.git ${BPATH}/$1/
 		echo '.git'
+		tar_backup $1/.git ${BPATH}
 	else
-		cp -r $1 ${BPATH}
 		echo '*'
+		tar_backup $1 ${BPATH}
 	fi
 }
 alias bak=backup
@@ -155,7 +158,6 @@ universal_backup()
 		cd ..
 	fi
 	backup $1
-	# gdbackup $1
 }
 alias unibak=universal_backup
 
@@ -194,8 +196,7 @@ clean_library_mac()
 	rm -rf $HOME/.*zcompdump*
 	rm -rf $HOME/.Trash
 	mkdir -p $HOME/.Trash
-	rm -rf $HOME/Library/Group\ Containers/6N38VWS5BX.ru.keepcoder.Telegram/account-7583096117702376182/postbox/media
-	mkdir -p $HOME/Library/Group\ Containers/6N38VWS5BX.ru.keepcoder.Telegram/account-7583096117702376182/postbox/media
+	rm -rf $HOME/Library/Group\ Containers/*.Telegram/account*/postbox/media
 }
 alias clm=clean_library_mac
 
@@ -230,8 +231,12 @@ alias gf='git fetch'
 alias gcl='git clone --recurse-submodules'
 alias gls='git ls-files'
 alias gp='git push'
-alias gm='git submodule'
+alias gsm='git submodule'
+alias gm='git merge'
 alias gst='git stash'
+alias grs='git reset'
+alias grsh='git reset --hard'
+alias grb='git rebase'
 alias gr='git remote'
 alias grv='git remote -v'
 alias gra='git remote add'
@@ -244,10 +249,12 @@ alias mr='norminette -R CheckForbiddenSourceHeader'
 alias o=open
 alias v=vim
 alias e=emacs
+alias emacs=vim
 
 alias ca=cat
 alias cae='cat -e'
 alias cp='cp -r'
+alias rf='rm -rf'
 alias p=pwd
 alias t=touch
 alias cl=clear
@@ -259,7 +266,7 @@ alias src='source'
 alias szs='source ~/.zshrc'
 alias ec=echo
 alias 42fc='bash ~/42FileChecker/42FileChecker.sh'
-alias bcc='bc -qilw'
+alias bc='bc -qilw'
 
 alias cb="/usr/bin/osascript -e 'tell application \"System Events\" to tell process \"Terminal\" to keystroke \"k\" using command down'"
 alias s='open -a "Sublime Text"'
