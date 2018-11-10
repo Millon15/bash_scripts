@@ -106,6 +106,9 @@ tar_backup()
 
 	EXT="tar.gz"
 
+	if [[ ! -d ${BPATH} ]]; then
+		mkdir ${BPATH}
+	fi
 	if [[ ! $2 ]]; then
 		2=$BPATH
 	elif [[ $(ls -ld $2 2> /dev/null | head -c 1) != 'd' ]]; then
@@ -113,7 +116,11 @@ tar_backup()
 		return 2;
 	fi
 
-	proj_name=${${1%/.git}##*/}
+	proj_name=${1%%.*}
+	for i in {0..10}; do
+		proj_name=${proj_name%/}
+	done
+	proj_name=${proj_name##*/}
 	if [[ -e "$2/${proj_name}.${EXT}" ]]; then
 		rm -f "$2/${proj_name}.${EXT}"
 	fi
@@ -128,9 +135,6 @@ backup()							# For sucsessful backup you need to be in the folder that you wan
 		return 1;
 	fi
 
-	if [[ ! -d ${BPATH} ]]; then
-		mkdir ${BPATH}
-	fi
 	if [[ ! -e "${BPATH}/$1" ]]; then
 		echo -n "Bakuping to ${BPATH}/$1/"
 	else
@@ -252,6 +256,7 @@ alias e=emacs
 alias emacs=vim
 
 alias ca=cat
+alias b=bat
 alias cae='cat -e'
 alias cp='cp -r'
 alias rf='rm -rf'
