@@ -87,6 +87,9 @@ source $ZSH/oh-my-zsh.sh
 # My email
 export MAIL="vbrazas@student.unit.ua"
 
+# Mongodb
+export PATH=/usr/local/mongodb/bin:$PATH
+
 # Load Homebrew config script
 source $HOME/.brewconfig.zsh
 
@@ -195,12 +198,16 @@ alias chext=change_extension
 
 clean_library_mac()
 {
+	TELEGA=$HOME/Library/Group\ Containers/*.Telegram/account-*/postbox/media
+
 	rm -rf $HOME/Library/*42_cache*
 	rm -rf $HOME/.*42_cache*
 	rm -rf $HOME/.*zcompdump*
 	rm -rf $HOME/.Trash
 	mkdir -p $HOME/.Trash
-	rm -rf $HOME/Library/Group\ Containers/*.Telegram/account*/postbox/media
+	if [[ ! $1 ]]; then
+		rm -rf $TELEGA
+	fi
 }
 alias clm=clean_library_mac
 
@@ -235,6 +242,7 @@ alias gf='git fetch'
 alias gcl='git clone --recurse-submodules'
 alias gls='git ls-files'
 alias gp='git push'
+alias grm='git rm'
 alias gsm='git submodule'
 alias gm='git merge'
 alias gst='git stash'
@@ -252,7 +260,6 @@ alias nr='norminette'
 alias mr='norminette -R CheckForbiddenSourceHeader'
 alias o=open
 alias v=vim
-alias e=emacs
 alias emacs=vim
 
 alias ca=cat
@@ -277,12 +284,14 @@ alias cb="/usr/bin/osascript -e 'tell application \"System Events\" to tell proc
 alias s='open -a "Sublime Text"'
 alias vsc='open -a "Visual Studio Code"'
 
-# alias lss='~/projects/archive/git_archive/ft_ls/ft_ls'
+alias lss='~/projects/archive/ft_ls/ft_ls'
 MAMPZSH="$HOME/projects/bash_scripts/mamp.zsh"
 alias mamp=$MAMPZSH
 alias remamp='mamp -r; mamp -i; sleep 10; while [[ $(diskutil list | grep MAMP) ]]; do sleep 5; done; mamp -l'
 export MAMP="$HOME/Library/Containers/MAMP"
 alias mysql='~/Library/Containers/MAMP/mysql/bin/mysql'
+alias avs="df -h | grep /dev/disk2 | awk '{print \$4}'"
 
 clear
 # screenfetch -E
+clean_library_mac &> /dev/null

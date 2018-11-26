@@ -32,7 +32,7 @@ elif [[ $1 == "-r" ]]; then
 	echo "Folder $MAMP has been removed"
 	echo "Default installiation directory: $MAMP"
 elif [[ $1 == "-i" ]]; then
-	open $HOME/Downloads/bitnami-mampstack-7.1.22-1-osx-x86_64-installer.dmg
+	open $HOME/Downloads/bitnami-mampstack-7.1.24-0-osx-x86_64-installer.dmg
 elif [[ $1 == "-h" || $1 == "--help" || $2 || "$*" == "" ]]; then
 	put_usage
 else
