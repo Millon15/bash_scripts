@@ -5,6 +5,7 @@
 
 SRC=src/
 INC=includes/
+TASK=task/
 
 echo -n "Input project name: "; read -r NAME
 
@@ -16,7 +17,11 @@ if [[ "$tmp" = "c" ]];
 		REGFILE_EXT=".cpp"; INCLFILE_EXT=".hpp"
 fi
 
-mkdir -p $NAME/$SRC $NAME/$INC; touch $NAME/$SRC$NAME$REGFILE_EXT; touch $NAME/$INC$NAME$INCLFILE_EXT; cd $NAME;
+cd $NAME
+mkdir -p $SRC $INC $TASK
+touch ${SRC}/${NAME}${REGFILE_EXT}
+touch ${INC}/${NAME}${INCLFILE_EXT}
+echo $(whoami) > author
 
 echo -n "Initialize the git? (y or n): "; read -r tmp;
 if [[ "$tmp" = "y" ]]; then
