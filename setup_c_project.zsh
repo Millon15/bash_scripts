@@ -10,8 +10,7 @@ TASK=task/
 echo -n "Input project name: "; read -r NAME
 
 echo -n "Is it C or C++ project? (c or c++): "; read -r tmp;
-if [[ "$tmp" = "c" ]];
-	then
+if [[ "$tmp" = "c" ]]; then
 		REGFILE_EXT=".c"; INCLFILE_EXT=".h"
 	else
 		REGFILE_EXT=".cpp"; INCLFILE_EXT=".hpp"
@@ -22,6 +21,17 @@ mkdir -p $SRC $INC $TASK
 touch ${SRC}/${NAME}${REGFILE_EXT}
 touch ${INC}/${NAME}${INCLFILE_EXT}
 echo $(whoami) > author
+
+echo -n "Do you want to add ft_printf libtrary? (y or n): "; read -r tmp;
+if [[ "$tmp" = "y" ]]; then
+	git submodule add https://github.com/millon15/ft_printf ft_printf
+fi
+
+echo -n "Do you want to download subject? (y or n): "; read -r tmp;
+if [[ "$tmp" = "y" ]]; then
+	echo -n "Please enter the subject pdf's link: "; read -r tmp;
+	curl $tmp > $TASK/$NAME.pdf
+fi
 
 echo -n "Initialize the git? (y or n): "; read -r tmp;
 if [[ "$tmp" = "y" ]]; then
@@ -94,17 +104,15 @@ dkms.conf
 
 # My addings
 _*
+*~
 test
-task
-obj
+$TASK
 
 GITIGNORE
-
 fi
 
-
 # Put Makefile
-cat > Makefile <<MAKEFILE
+cat > aMakefile <<MAKEFILE
 # **************************************************************************** #
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
@@ -116,21 +124,23 @@ cat > Makefile <<MAKEFILE
 #                                                                              #
 # **************************************************************************** #
 
+.PHONY: all clean fclean re mclean mfclean mre
+
 NAME = $NAME
 
 SRC_PATH = src/
-OP_PATH = \$(SRC_PATH)operations/
-LIB_PATH = ../../ft_printf/
+LIB_PATH = ft_printf/
 OBJ_PATH = .obj/
 
 CC = clang
-CFLAGS = -Wall -Werror -Wextra
+CFLAGS = -g -Wall -Wextra -Werror
 
 INC_PATH = includes/
-IFLAGS = -I ../../\$(INC_PATH) -I \$(INC_PATH) -I \$(LIB_PATH)
+IFLAGS = -I \$(INC_PATH) -I \$(LIB_PATH)
+LFLAGS = -L \$(LIB_PATH) -lftprintf
 
-HFILES = $INC$NAME$INCLFILE_EXT
-FILES = $SRC$NAME$REGFILE_EXT
+HFILES = $NAME
+FILES = $NAME
 LIB = \$(LIB_PATH)libftprintf.a
 
 HDRS = \$(addprefix \$(INC_PATH), \$(addsuffix .h, \$(HFILES)))
@@ -141,32 +151,31 @@ OBJS = \$(addprefix \$(OBJ_PATH), \$(SRCS:%.c=%.o))
 all: \$(NAME)
 
 \$(NAME): \$(LIB) \$(OBJ_PATH) \$(OBJS)
-    \$(CC) \$(CFLAGS) \$(IFLAGS) \$(OBJS) \$(LIB) -o \$(NAME)
+	\$(CC) \$(CFLAGS) \$(IFLAGS) \$(LFLAGS) \$(OBJS) -o \$(NAME)
 
 \$(LIB):
-    make -C \$(LIB_PATH)
+	make -C \$(LIB_PATH)
 
 \$(OBJ_PATH):
-    mkdir -p \$(OBJ_PATH)\$(OP_PATH)
+	mkdir -p \$(OBJ_PATH)\$(SRC_PATH)
 \$(OBJ_PATH)%.o: %.c \$(HDRS)
-    \$(CC) \$(CFLAGS) \$(IFLAGS) -c \$< -o \$@
+	\$(CC) \$(CFLAGS) \$(IFLAGS) -c \$< -o \$@
 
 clean: mclean
-    make clean -C \$(LIB_PATH)
+	make clean -C \$(LIB_PATH)
 fclean: mfclean
-    make fclean -C \$(LIB_PATH)
+	make fclean -C \$(LIB_PATH)
 re: fclean all
 
 mclean:
-    rm -f \$(OBJS) \$(DEPS)
+	rm -f \$(OBJS) \$(DEPS)
 mfclean:
-    rm -f \$(NAME)
-    rm -rf \$(OBJ_PATH)
+	rm -f \$(NAME)
+	rm -rf \$(OBJ_PATH)
 mre: mfclean all
 
-.PHONY: all clean fclean re mclean mfclean mre
-
 MAKEFILE
+
 if [[ "$REGFILE_EXT" = ".cpp" ]]; then
 	sed -e "s/\.c/\.cpp/g" -e "s/\.h/\.hpp/g" Makefile
 fi

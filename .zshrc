@@ -90,6 +90,9 @@ export MAIL="vbrazas@student.unit.ua"
 # Mongodb
 export PATH=/usr/local/mongodb/bin:$PATH
 
+# Qt
+export PATH=$HOME/Qt/5.6.3/clang_64/bin:$PATH
+
 # Load Homebrew config script
 source $HOME/.brewconfig.zsh
 
@@ -211,6 +214,17 @@ clean_library_mac()
 }
 alias clm=clean_library_mac
 
+vscode_sync()
+{
+	GIST=https://gist.githubusercontent.com/Millon15/83e066d54e1393b35443f23f3fc41cda/raw/4cfa60c50561e8f4baaf9e3c60205c5ea35c7866/
+	VSCODE=$HOME/Library/Application\ Support/Code/User/
+
+	for i in keybindings.json settings.json; do
+		curl ${GIST}/$i > ${VSCODE}/$i
+	done
+}
+alias vscs=vscode_sync
+
 alias zbak='cp $HOME/.zshrc $HOME/projects/bash_scripts/'
 alias cld='docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v /etc:/etc -e REMOVE_VOLUMES=1 spotify/docker-gc'
 
@@ -256,6 +270,10 @@ alias grao='git remote add origin'
 alias gl="git log --oneline --decorate --all --graph"
 alias gll='git pull'
 
+alias n=npm
+alias ni='npm install'
+alias ns='npm start'
+
 alias nr='norminette'
 alias mr='norminette -R CheckForbiddenSourceHeader'
 alias o=open
@@ -294,4 +312,4 @@ alias avs="df -h | grep /dev/disk2 | awk '{print \$4}'"
 
 clear
 # screenfetch -E
-clean_library_mac &> /dev/null
+# clean_library_mac &> /dev/null
