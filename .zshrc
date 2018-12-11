@@ -88,10 +88,10 @@ source $ZSH/oh-my-zsh.sh
 export MAIL="vbrazas@student.unit.ua"
 
 # Mongodb
-export PATH=/usr/local/mongodb/bin:$PATH
+#export PATH=/usr/local/mongodb/bin:$PATH
 
 # Qt
-export PATH=$HOME/Qt/5.6.3/clang_64/bin:$PATH
+#export PATH=$HOME/Qt/5.6.3/clang_64/bin:$PATH
 
 # Load Homebrew config script
 source $HOME/.brewconfig.zsh
@@ -136,7 +136,7 @@ alias tbak=tar_backup
 
 backup()							# For sucsessful backup you need to be in the folder that you want to backup
 {
-	if [[ ! $1 ]]; then
+	if [[ ! $1 ]] || ! $(ls $1 1>/dev/null); then
 		echo "Usage: bak <file|folder to backup>"
 		return 1;
 	fi
@@ -156,8 +156,20 @@ backup()							# For sucsessful backup you need to be in the folder that you wan
 }
 alias bak=backup
 
+mcdir()
+{
+	mkdir -p $1
+	cd $1
+}
+alias mcd=mcdir
+
 universal_backup()
 {
+	if [[ ! $1 ]] || ! $(ls $1 1>/dev/null); then
+		echo "Usage: unibak <file|folder to backup> [\"commit message\"]"
+		return 1;
+	fi
+
 	if [ -d "$1" -a -d "$1/.git" -a $2 ]; then
 		cd $1
 		git add --all
@@ -177,8 +189,7 @@ BIP="$HOME/.Trash/"
 remove()
 {
 	echo "Removing to ${BIP}"
-	for i in $*;
-	do
+	for i in $*; do
 		rm -rf ${BIP}$i
 		mv $i ${BIP}
 	done
@@ -264,6 +275,7 @@ alias grs='git reset'
 alias grsh='git reset --hard'
 alias grb='git rebase'
 alias gr='git remote'
+alias gt='git tag'
 alias grv='git remote -v'
 alias gra='git remote add'
 alias grao='git remote add origin'
