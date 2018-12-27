@@ -91,13 +91,22 @@ export MAIL="vbrazas@student.unit.ua"
 #export PATH=/usr/local/mongodb/bin:$PATH
 
 # Qt
-#export PATH=$HOME/Qt/5.6.3/clang_64/bin:$PATH
+export PATH=$HOME/goinfre/Qt/5.6.3/clang_64/bin:$PATH
 
 # Load Homebrew config script
 source $HOME/.brewconfig.zsh
 
 
 ##### START OF BASH SCRIPTS #####
+#### Colors definitions
+GREEN='\e[0;32m'
+RED='\e[0;31m'
+YELLOW='\e[93m'
+CYAN='\e[96m'
+MAG='\e[95m'
+BLUE='\e[1;34m'
+RESET='\e[0m'
+
 #### Backup scripts
 #### You have to be in the folder, that contains the directories to backup
 BPATH="$HOME/backups"				# For sucsessful backup you need to be in the folder that you want to backup
@@ -212,23 +221,21 @@ alias chext=change_extension
 
 clean_library_mac()
 {
-	TELEGA=$HOME/Library/Group\ Containers/*.Telegram/account-*/postbox/media
+	TELEGA="$HOME/Library/Group\\ Containers/*.Telegram/account-*/postbox/media"
 
 	rm -rf $HOME/Library/*42_cache*
 	rm -rf $HOME/.*42_cache*
 	rm -rf $HOME/.*zcompdump*
 	rm -rf $HOME/.Trash
 	mkdir -p $HOME/.Trash
-	if [[ ! $1 ]]; then
-		rm -rf $TELEGA
-	fi
+	echo "${YELLOW}To clean up telegram cache execute next command:\n$: rm -rf ${TELEGA}${RESET}"
 }
 alias clm=clean_library_mac
 
 vscode_sync()
 {
-	GIST=https://gist.githubusercontent.com/Millon15/83e066d54e1393b35443f23f3fc41cda/raw/4cfa60c50561e8f4baaf9e3c60205c5ea35c7866/
-	VSCODE=$HOME/Library/Application\ Support/Code/User/
+	GIST="https://gist.githubusercontent.com/Millon15/83e066d54e1393b35443f23f3fc41cda/raw/4cfa60c50561e8f4baaf9e3c60205c5ea35c7866/"
+	VSCODE="$HOME/Library/Application Support/Code/User/"
 
 	for i in keybindings.json settings.json; do
 		curl ${GIST}/$i > ${VSCODE}/$i
@@ -269,6 +276,7 @@ alias gls='git ls-files'
 alias gp='git push'
 alias grm='git rm'
 alias gsm='git submodule'
+alias gpu='git push -u origin master'
 alias gm='git merge'
 alias gst='git stash'
 alias grs='git reset'
@@ -294,6 +302,7 @@ alias emacs=vim
 
 alias ca=cat
 alias b=bat
+alias vzs='vim $HOME/.zshrc'
 alias cae='cat -e'
 alias cp='cp -r'
 alias rf='rm -rf'
