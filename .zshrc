@@ -238,7 +238,7 @@ vscode_sync()
 	VSCODE="$HOME/Library/Application Support/Code/User/"
 
 	for i in keybindings.json settings.json; do
-		curl ${GIST}/$i > ${VSCODE}/$i
+		curl ${GIST}/$i | sed -e "s/vbrazas/$(whoami)/g" > ${VSCODE}/$i
 	done
 }
 alias vscs=vscode_sync
@@ -329,7 +329,7 @@ alias mamp=$MAMPZSH
 alias remamp='mamp -r; mamp -i; sleep 10; while [[ $(diskutil list | grep MAMP) ]]; do sleep 5; done; mamp -l'
 export MAMP="$HOME/Library/Containers/MAMP"
 alias mysql='~/Library/Containers/MAMP/mysql/bin/mysql'
-alias avs="df -h | grep /dev/disk2 | awk '{print \$4}'"
+alias avs="df -h | grep /dev/disk1 | awk '{print \$4}'"
 
 clear
 # screenfetch -E
