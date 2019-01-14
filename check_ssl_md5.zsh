@@ -1,9 +1,13 @@
 #!/bin/zsh
-ascii=($(echo " \!\"\#\$\%\&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ\[\\\]^_\`abcdefghijklmnopqrstuvwxyz{|}~" | grep -o .))
-arlen=${#ascii[@]}
-i=$1
 
-while [[ $1 ]]; do
-	echo ${ascii[$RANDOM%$arlen]}
-	let i--;
+FILENAME=.tmp_$RANDOM
+
+echo > $FILENAME
+for (( i = 0; i < $1; i++ )); do
+	arr+=($(($RANDOM%256)));
 done
+for (( i = 0; i < $1; i++ )); do
+	echo -n "\x$(printf %x ${arr[$i]})" >> $FILENAME
+done
+
+# diff <(md5 .tmp_9418) <(md5 .tmp_20613)
