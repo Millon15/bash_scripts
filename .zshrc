@@ -2,7 +2,8 @@
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
-export ZSH=/nfs/2017/v/vbrazas/.oh-my-zsh
+# export ZSH=/nfs/2017/v/vbrazas/.oh-my-zsh
+export ZSH=$HOME/vbrazas/.oh-my-zsh
 
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-zsh is loaded.
@@ -17,7 +18,7 @@ ZSH_THEME="robbyrussell"
 # HYPHEN_INSENSITIVE="true"
 
 # Uncomment the following line to disable bi-weekly auto-update checks.
-DISABLE_AUTO_UPDATE="true"
+DISABLE_AUTO_UPDATE="false"
 
 # Uncomment the following line to change how often to auto-update (in days).
 # export UPDATE_ZSH_DAYS=13
@@ -88,10 +89,10 @@ source $ZSH/oh-my-zsh.sh
 export MAIL="vbrazas@student.unit.ua"
 
 # Mongodb
-#export PATH=/usr/local/mongodb/bin:$PATH
+# export PATH=/usr/local/mongodb/bin:$PATH
 
 # Qt
-export PATH=$HOME/goinfre/Qt/5.6.3/clang_64/bin:$PATH
+#export PATH=$HOME/goinfre/Qt/5.6.3/clang_64/bin:$PATH
 
 # Load Homebrew config script
 source $HOME/.brewconfig.zsh
@@ -234,7 +235,7 @@ alias clm=clean_library_mac
 
 vscode_sync()
 {
-	GIST="https://gist.githubusercontent.com/Millon15/83e066d54e1393b35443f23f3fc41cda/raw/4cfa60c50561e8f4baaf9e3c60205c5ea35c7866/"
+	GIST="https://gist.githubusercontent.com/Millon15/83e066d54e1393b35443f23f3fc41cda/raw/"
 	VSCODE="$HOME/Library/Application Support/Code/User/"
 
 	for i in keybindings.json settings.json; do
@@ -242,6 +243,18 @@ vscode_sync()
 	done
 }
 alias vscs=vscode_sync
+
+zshrc_sync()
+{
+	TEXT="https://raw.githubusercontent.com/Millon15/bash_scripts/master/.zshrc"
+
+	backup $HOME/.zshrc
+	curl $TEXT \
+	| sed -e "s:export ZSH=\$HOME/vbrazas/.oh-my-zsh:export ZSH=\$HOME/$(whoami)/.oh-my-zsh:" \
+	-e "s:export MAIL=\"vbrazas@student.unit.ua\":export MAIL=\"$(whoami)@student.unit.ua\":g" \
+	> $HOME/.zshrc
+}
+alias zshs=zshrc_sync
 
 alias zbak='cp $HOME/.zshrc $HOME/projects/bash_scripts/'
 alias cld='docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v /etc:/etc -e REMOVE_VOLUMES=1 spotify/docker-gc'
@@ -323,14 +336,13 @@ alias cb="/usr/bin/osascript -e 'tell application \"System Events\" to tell proc
 alias s='open -a "Sublime Text"'
 alias vsc='open -a "Visual Studio Code"'
 
-alias lss='~/projects/archive/ft_ls/ft_ls'
-MAMPZSH="$HOME/projects/bash_scripts/mamp.zsh"
-alias mamp=$MAMPZSH
-alias remamp='mamp -r; mamp -i; sleep 10; while [[ $(diskutil list | grep MAMP) ]]; do sleep 5; done; mamp -l'
-export MAMP="$HOME/Library/Containers/MAMP"
-alias mysql='~/Library/Containers/MAMP/mysql/bin/mysql'
-alias avs="df -h | grep /dev/disk2 | awk '{print \$4}'"
+# alias lss='~/projects/archive/ft_ls/ft_ls'
+
+# export MAMP="$HOME/Library/Containers/MAMP"
+# MAMPZSH="$HOME/projects/bash_scripts/mamp.zsh"
+# alias mamp=$MAMPZSH
+# alias remamp='mamp -r; mamp -i; sleep 10; while [[ $(diskutil list | grep MAMP) ]]; do sleep 5; done; mamp -l'
+# alias mysql='~/Library/Containers/MAMP/mysql/bin/mysql'
+# alias avs="df -h | grep /dev/disk2 | awk '{print \$4}'"
 
 clear
-# screenfetch -E
-# clean_library_mac &> /dev/null
