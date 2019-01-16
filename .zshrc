@@ -2,8 +2,8 @@
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
-# export ZSH=/nfs/2017/v/vbrazas/.oh-my-zsh
-export ZSH=$HOME/vbrazas/.oh-my-zsh
+# export ZSH=$HOME/vbrazas/.oh-my-zsh
+export ZSH=/nfs/2017/v/vbrazas/.oh-my-zsh
 
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-zsh is loaded.
@@ -113,9 +113,19 @@ RESET='\e[0m'
 BPATH="$HOME/backups"				# For sucsessful backup you need to be in the folder that you want to backup
 GPATH="$HOME/Google Drive/backups"	# Google Drive backup, works only if you have installed Google Drive
 
+get_name()
+{
+	# echo $(cd $(dirname $filepath); pwd)/$(basename $filepath)
+	pn=${1%.*}
+	pn=$(basename $pn)
+	pn=${pn/#./}
+	pn=${pn%%.*}
+	echo $pn
+}
+
 tar_backup()
 {
-	if [[ ! $1 ]]; then
+	if [[ ! $1 ]] || ! $(ls $1 1> /dev/null); then
 		echo "Usage: tbak <file|folder to backup> [path to put tarred file|folder]"
 		return 1;
 	fi
@@ -132,21 +142,16 @@ tar_backup()
 		return 2;
 	fi
 
-	proj_name=${1%%.*}
-	for i in {0..10}; do
-		proj_name=${proj_name%/}
-	done
-	proj_name=${proj_name##*/}
-	if [[ -e "$2/${proj_name}.${EXT}" ]]; then
-		rm -f "$2/${proj_name}.${EXT}"
-	fi
+	proj_name=$(get_name "$1")
+
+	rm -f "$2/${proj_name}.${EXT}"
 	tar -czf "$2/${proj_name}.${EXT}" $1
 }
 alias tbak=tar_backup
 
 backup()							# For sucsessful backup you need to be in the folder that you want to backup
 {
-	if [[ ! $1 ]] || ! $(ls $1 1>/dev/null); then
+	if [[ ! $1 ]] || ! $(ls $1 1> /dev/null); then
 		echo "Usage: bak <file|folder to backup>"
 		return 1;
 	fi
@@ -248,15 +253,24 @@ zshrc_sync()
 {
 	TEXT="https://raw.githubusercontent.com/Millon15/bash_scripts/master/.zshrc"
 
-	backup $HOME/.zshrc
+	tar_backup $HOME/.zshrc
 	curl $TEXT \
-	| sed -e "s:export ZSH=\$HOME/vbrazas/.oh-my-zsh:export ZSH=\$HOME/$(whoami)/.oh-my-zsh:" \
+	| sed -e "s:export ZSH=/nfs/2017/v/vbrazas/.oh-my-zsh:export ZSH=\$HOME/$(whoami)/.oh-my-zsh:" \
 	-e "s:export MAIL=\"vbrazas@student.unit.ua\":export MAIL=\"$(whoami)@student.unit.ua\":g" \
 	> $HOME/.zshrc
 }
 alias zshs=zshrc_sync
 
-alias zbak='cp $HOME/.zshrc $HOME/projects/bash_scripts/'
+zshrc_backup()
+{
+	BSDIR="$HOME/projects/bash_scripts/"
+
+	cp $HOME/.zshrc $BSDIR
+	if [[ "$1" ]]; then
+		universal_backup $BSDIR "Another backup"
+	fi
+}
+alias zbak=zshrc_backup
 alias cld='docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v /etc:/etc -e REMOVE_VOLUMES=1 spotify/docker-gc'
 
 ##### END OF BASH SCRIPTS #####
