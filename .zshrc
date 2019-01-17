@@ -110,14 +110,12 @@ RESET='\e[0m'
 
 #### Backup scripts
 #### You have to be in the folder, that contains the directories to backup
-BPATH="$HOME/backups"				# For sucsessful backup you need to be in the folder that you want to backup
-GPATH="$HOME/Google Drive/backups"	# Google Drive backup, works only if you have installed Google Drive
+BPATH="$HOME/backups"	# For sucsessful backup you need to be in the folder that you want to backup
 
 get_name()
 {
-	# echo $(cd $(dirname $filepath); pwd)/$(basename $filepath)
-	pn=${1%.*}
-	pn=$(basename $pn)
+	# echo $(cd (dirname $1); pwd)/$(basename $1)
+	pn=$(basename $1)
 	pn=${pn/#./}
 	pn=${pn%%.*}
 	echo $pn
@@ -149,7 +147,7 @@ tar_backup()
 }
 alias tbak=tar_backup
 
-backup()							# For sucsessful backup you need to be in the folder that you want to backup
+backup()
 {
 	if [[ ! $1 ]] || ! $(ls $1 1> /dev/null); then
 		echo "Usage: bak <file|folder to backup>"
