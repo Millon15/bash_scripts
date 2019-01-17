@@ -349,6 +349,7 @@ alias bc='bc -qilw'
 alias cb="/usr/bin/osascript -e 'tell application \"System Events\" to tell process \"Terminal\" to keystroke \"k\" using command down'"
 alias s='open -a "Sublime Text"'
 alias vsc='open -a "Visual Studio Code"'
+alias avs="df -h | grep /dev/disk2 | awk '{print \$4}'"
 
 # alias lss='~/projects/archive/ft_ls/ft_ls'
 
@@ -357,6 +358,5 @@ alias vsc='open -a "Visual Studio Code"'
 # alias mamp=$MAMPZSH
 # alias remamp='mamp -r; mamp -i; sleep 10; while [[ $(diskutil list | grep MAMP) ]]; do sleep 5; done; mamp -l'
 # alias mysql='~/Library/Containers/MAMP/mysql/bin/mysql'
-# alias avs="df -h | grep /dev/disk2 | awk '{print \$4}'"
 
 clear
