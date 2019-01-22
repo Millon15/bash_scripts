@@ -111,13 +111,26 @@ RESET='\e[0m'
 #### Backup scripts
 #### You have to be in the folder, that contains the directories to backup
 BPATH="$HOME/backups"	# For sucsessful backup you need to be in the folder that you want to backup
+TAREXT="tar.xz"
+
+abs_name()
+{
+	echo $(cd $(dirname $1); pwd)/$(basename $1)
+}
 
 get_name()
 {
-	# echo $(cd (dirname $1); pwd)/$(basename $1)
-	pn=$(basename $1)
+	if [ -f $1 ]; then
+		pn=$(cd $(dirname $1); pwd)/$(basename $1)
+		pn=${pn%%\/.}
+		pn=${pn%%\/..}
+		pn=${pn%%\/.git}
+		pn=$(basename $pn)
+	else
+		pn=$(cd $1; pwd)
+		pn=$(basename $pn)
+	fi
 	pn=${pn/#./}
-	pn=${pn%%.*}
 	echo $pn
 }
 
@@ -127,8 +140,6 @@ tar_backup()
 		echo "Usage: tbak <file|folder to backup> [path to put tarred file|folder]"
 		return 1;
 	fi
-
-	EXT="tar.gz"
 
 	if [[ ! -d ${BPATH} ]]; then
 		mkdir ${BPATH}
@@ -140,10 +151,9 @@ tar_backup()
 		return 2;
 	fi
 
-	proj_name=$(get_name "$1")
-
-	rm -f "$2/${proj_name}.${EXT}"
-	tar -czf "$2/${proj_name}.${EXT}" $1
+	pn=$(get_name "$1")
+	rm -f "$2/${pn}.$TAREXT"
+	tar -cJf "$2/${pn}.$TAREXT" $(abs_name "$1")
 }
 alias tbak=tar_backup
 
@@ -154,27 +164,29 @@ backup()
 		return 1;
 	fi
 
+	pn=$(get_name "$1")
+
 	if [[ ! -e "${BPATH}/$1" ]]; then
-		echo -n "Bakuping to ${BPATH}/$1/"
+		echo -n "Bakuping to ${BPATH}/$pn.$TAREXT"
 	else
-		echo -n "Rewriting bakup to ${BPATH}/$1/"
+		echo -n "Rewriting bakup to ${BPATH}/$pn.$TAREXT"
 	fi
 	if [[ ! $2 && -d "$1/.git" ]]; then
 		echo '.git'
-		tar_backup $1/.git ${BPATH}
+		tar_backup $pn/.git ${BPATH}
 	else
 		echo '*'
-		tar_backup $1 ${BPATH}
+		tar_backup $pn ${BPATH}
 	fi
 }
 alias bak=backup
 
-mcdir()
+cdmkdir()
 {
 	mkdir -p $1
 	cd $1
 }
-alias mcd=mcdir
+alias mkd=cdmkdir
 
 universal_backup()
 {
@@ -208,6 +220,52 @@ remove()
 	done
 }
 alias re=remove
+
+mamp()
+{
+	MAMP=$HOME/Library/Containers/MAMP
+	CONFF="$MAMP/apache2/conf/bitnami/bitnami.conf"
+	IMAIN="Include \"$HOME/http/main.conf\""
+	IMATCHA="Include \"$HOME/http/matcha.conf\""
+
+	put_usage()
+	{
+		echo "Usage: mamp [-i] [-l] [-r] [-h] [--re]"
+		echo "Default installiation directory: $MAMP"
+		echo "mamp -i : launch instaliation drive"
+		echo "mamp -l : makes aliases on Desktop and setup my custom MAMP environment"
+		echo "mamp -r : remove the '$MAMP' folder"
+		echo "mamp -h : call help reference"
+	}
+
+	if [[ $1 == "-l" ]]; then
+		echo "Creating MAMP aliases and new folder: $HOME/http/MyWebSite"
+		rm -f $HOME/Desktop/MAMP
+		ln -s $MAMP/manager-osx.app $HOME/Desktop/MAMP
+		mkdir -p $HOME/http/MyWebSite
+		echo "Turning off MAMP backend caching and correcting $MAMP/apache2/conf/bitnami/bitnami.conf"
+		sed -i "" -e 's/opcache.revalidate_freq=60/opcache.revalidate_freq=0/g' -e 's/\;sendmail_path/sendmail_path/' $MAMP/php/etc/php.ini
+		if [[ ! $(grep "$IMAIN" $CONFF) ]]; then
+			echo $IMAIN >> $CONFF
+		fi
+		if [[ ! $(grep "$IMATCHA" $CONFF) ]]; then
+			echo $IMATCHA >> $CONFF
+		fi
+	elif [[ $1 == "-r" ]]; then
+		rm -rf $MAMP
+		echo "Folder $MAMP has been removed"
+		echo "Default installiation directory: $MAMP"
+	elif [[ $1 == "-i" ]]; then
+		open $HOME/Downloads/bitnami-mampstack-7.1.24-0-osx-x86_64-installer.dmg
+	elif [[ $1 == "-h" || $1 == "--help" || $2 || "$*" == "" ]]; then
+		put_usage
+	else
+		put_usage
+	fi
+}
+# export MAMP="$HOME/Library/Containers/MAMP"
+# alias remamp='mamp -r; mamp -i; sleep 10; while [[ $(diskutil list | grep MAMP) ]]; do sleep 5; done; mamp -l'
+# alias mysql='~/Library/Containers/MAMP/mysql/bin/mysql'
 
 change_extension()
 {
@@ -348,13 +406,5 @@ alias cb="/usr/bin/osascript -e 'tell application \"System Events\" to tell proc
 alias s='open -a "Sublime Text"'
 alias vsc='open -a "Visual Studio Code"'
 alias avs="df -h | grep /dev/disk2 | awk '{print \$4}'"
-
-# alias lss='~/projects/archive/ft_ls/ft_ls'
-
-# export MAMP="$HOME/Library/Containers/MAMP"
-# MAMPZSH="$HOME/projects/bash_scripts/mamp.zsh"
-# alias mamp=$MAMPZSH
-# alias remamp='mamp -r; mamp -i; sleep 10; while [[ $(diskutil list | grep MAMP) ]]; do sleep 5; done; mamp -l'
-# alias mysql='~/Library/Containers/MAMP/mysql/bin/mysql'
 
 clear
