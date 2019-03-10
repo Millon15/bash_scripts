@@ -1,9 +1,9 @@
 #!/bin/bash
 
 #gil()
-#{
+# {
 #	/bin/bash $HOME/projects/bash_scripts/this.sh "$@"
-#}
+# }
 #alias git='gil'
 #[url ""] insteadOf = 
 
