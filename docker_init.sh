@@ -15,7 +15,7 @@ TMP_DIR="$HOME/goinfre/"
 [[ -d $HOME/.docker ]] && mv $HOME/.docker ${TMP_DIR}${USER}_docker/
 
 docker-machine create   --virtualbox-disk-size "15360" \
-                        --virtualbox-boot2docker-url https://github.com/boot2docker/boot2docker/releases/download/v18.09.1/boot2docker.iso \
+                        --virtualbox-boot2docker-url https://github.com/boot2docker/boot2docker/releases/download/v18.09.6/boot2docker.iso \
                         -d virtualbox   default
 
 docker-machine stop default
